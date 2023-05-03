@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+    <!-- Load icon library -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+<body>
+  <button id="cat_pics" >Click Me!</button>
+<!-- The form -->
+<form class="example" action="#">
+  <input type="text" id="search_text" placeholder="Search.." name="search">
+  <button type="submit"><i class="fa fa-search"></i></button>
+</form>
+
+
+  <script>
+    let btn = document.querySelector('#cat_pics')
+    let cat_img = document.createElement('img');
+    let search_btn = document.querySelector('button[type="submit"]')
+    let searchTerms = document.getElementById("search_text")
+    let content =document.createElement("div")
+    content.setAttribute("id","content")
+    let searchImage = document.createElement("img")
+
+
+    btn.onclick= function(){
+        
+        fetch('https://api.giphy.com/v1/gifs/translate?api_key=phg61Q8Eu8WAlMmy4watCNl7Zq3FwAtX&s=cats', {mode: 'cors'})
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(response) {
+             cat_img.src = response.data.images.original.url;
+             
+         });
+         document.body.appendChild(cat_img)
+    }
+    
+    search_btn.onclick= function(){
+        let searchThis = searchTerms.value
+        content.innerHTML = searchThis
+        //content.innerHTML = searchTerms.value
+        console.log(searchThis)
+        fetch(`https://api.giphy.com/v1/gifs/translate?api_key=phg61Q8Eu8WAlMmy4watCNl7Zq3FwAtX&s=${searchThis}`, {mode: 'cors'})
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(response){
+              console.log(response)
+                //console.log(response.data.images.original.url)
+                searchImage.src = response.data.images.original.url;
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });   
+            
+        console.log(`search: ${content.innerHTML}`)
+        document.body.appendChild(content)
+        document.body.appendChild(searchImage)
+        
+    }
+    
+
+  </script>
+</body>
+</html>
