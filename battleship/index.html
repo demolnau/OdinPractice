@@ -6,8 +6,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="javascript.js" defer></script>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <h1>Battleship</h1>
+    <div id="main">
+        <div id="left">
+            <div class="boards">
+                <div  id="opponent_board">
+                    <div class="opponent-grid-label">Opponent's Board</div>
+                    <div class="grid-container-opponent"></div>
+        
+                </div>
+                <div  id="my_board">
+                    <div class="my-grid-label">My Board</div>
+                    <div class="grid-container-mine"></div>
+                </div>
+            </div>
+        </div>
+        <div id="right">
+            <div class="choices">
+                <div class="content">
+                    <button class="manual_placement">
+                        Manual Placement
+                    </button>
+                    <button class="random_placement">
+                        Random Placement
+                    </button>
+                </div>
+            </div>
+            <div class="console">
+                <span class="text">
+
+                </span>
+            </div>
+        </div>
+    </div>
+
     
 </body>
 </html>
