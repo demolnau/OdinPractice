@@ -46,18 +46,26 @@ function Gameboard(){
     var position_of_hits = [];
     var number_of_ships_sunk = 0 ;
     var number_of_ships_played = 0;
-    //var position_of_ships = get_position_of_ships()
+    // this.board = create_board();
+    // this.ships = generate_ships();
+    // this.missed_shots = [];
+    // this.position_of_hits = [];
+    // this.number_of_ships_sunk = 0 ;
+    // this.number_of_ships_played = 0;
+ 
     
 
     function create_board(){
-        var game_board = [] 
+        var gameboard = [] 
         for(let i=0; i<DIMENSIONS; i++){
+            gameboard[i]=[]
             for (let j=0; j<DIMENSIONS; j++){
                 let newSquare = Square(i,j);
-                game_board.push(newSquare)
+                gameboard[i][j] = newSquare
+                //gameboard.push([i,j])
             }
         }
-        return game_board
+        return gameboard
     }
 
     function generate_ships(){
@@ -78,15 +86,6 @@ function Gameboard(){
         }
         console.log("position "+ posX + "," +posY + " is not on the board")
         return false;
-    }
-
-
-    this.get_index=function(posX, posY){
-        for(let i=0; i<board.length;i++){
-            if(JSON.stringify(board[i].position) == JSON.stringify([posX,posY])){
-                return i;
-            }
-        }
     }
 
     function nowrap(ship_to_place,position_arr,isVertical){
@@ -121,146 +120,74 @@ function Gameboard(){
         }
 
     }
-    //this.isPlacementPossible = function(ship_to_place, position_arr, isVertical){
+  
     function isPlacementPossible(ship_to_place, position_arr, isVertical){
-        //console.log("ship to place: "+ ship_to_place.name)
-        try{
-            var position_of_ships = this.get_position_of_ships()
-        if(ship_to_place.ship_length != position_arr.length){
-            console.log("Array is not the same length as the ship length required for that type of ship")
-            return false;
-        }
-        if(nowrap(ship_to_place,position_arr,isVertical)==false){
-            console.log("wrapping is not allowed!")
-            return false
-        }
-        
-        //loops through the possible positions
-        //console.log("Current position of all ships on board: " + JSON.stringify(position_of_ships))
-        //console.log("Proposed position array: "+ JSON.stringify(position_arr))
-        for(let i = 0 ; i< position_arr.length; i++){
-            if(JSON.stringify(position_of_ships).includes(JSON.stringify(position_arr[i]))){
-                console.log("WARNING: There is already a ship there")
-                return false
-            }
-            //check if all positions are within board
-            if(!check_position_on_board(position_arr[i][0], position_arr[i][1]) ){
-                console.log("That position is off the board")
+            var position_of_ships = get_position_of_ships()
+            if(ship_to_place.ship_length != position_arr.length){
+                console.log("Array is not the same length as the ship length required for that type of ship")
                 return false;
             }
-        }
-        return true;
-        }
-        catch(error){
-            if(error instanceof TypeError ){
-                var position_of_ships = get_position_of_ships()
-                if(ship_to_place.ship_length != position_arr.length){
-                    console.log("Array is not the same length as the ship length required for that type of ship")
-                    return false;
-                }
-                if(nowrap(ship_to_place,position_arr,isVertical)==false){
-                    console.log("wrapping is not allowed!")
+            if(nowrap(ship_to_place,position_arr,isVertical)==false){
+                console.log("wrapping is not allowed!")
+                return false
+            }
+            
+            //loops through the possible positions
+            for(let i = 0 ; i< position_arr.length; i++){
+                if(JSON.stringify(position_of_ships).includes(JSON.stringify(position_arr[i]))){
+                    console.log("WARNING: There is already a ship there")
                     return false
                 }
-                
-                //loops through the possible positions
-                //console.log("Current position of all ships on board: " + JSON.stringify(position_of_ships))
-                //console.log("Proposed position array: "+ JSON.stringify(position_arr))
-                for(let i = 0 ; i< position_arr.length; i++){
-                    if(JSON.stringify(position_of_ships).includes(JSON.stringify(position_arr[i]))){
-                        console.log("WARNING: There is already a ship there")
-                        return false
-                    }
-                    //check if all positions are within board
-                    if(!check_position_on_board(position_arr[i][0], position_arr[i][1]) ){
-                        console.log("That position is off the board")
-                        return false;
-                    }
+                //check if all positions are within board
+                if(!check_position_on_board(position_arr[i][0], position_arr[i][1]) ){
+                    console.log("That position is off the board")
+                    return false;
                 }
-                return true;
             }
-            else{
-                throw error
-            }
-        }
+            return true;
         
     }
 
-    function placeShip(ship_to_place, position_arr , isVertical){
-        console.log("Called place ship on: " + ship_to_place.name +
-         "\n for positions: "+JSON.stringify(position_arr))
-        //console.log("Current position of ships include: "+ JSON.stringify(position_of_ships))
-        //check if placement is possible
-        try{
-            if(this.isPlacementPossible(ship_to_place, position_arr, isVertical)){
+    function placeShip(ship_to_place, position_arr, isVertical){
+            console.log("Called place ship on: " + ship_to_place.name +
+            "\n at position: "+ JSON.stringify(position_arr))
+            if(isPlacementPossible(ship_to_place, position_arr, isVertical)){
                 ship_to_place.position = position_arr
-                this.number_of_ships_played++;
                 console.log(ship_to_place.name + " placed successfully")
-                //console.log("Updated position array: " + JSON.stringify(this.get_position_of_ships()))
-                //return position_of_ships
                 return true
             } 
             else{
                 console.log("WARNING: You cannot place ship")
                 return false
             }
-        }
-        catch(error){
-            if(error instanceof TypeError){
-                if(isPlacementPossible(ship_to_place, position_arr, isVertical)){
-                    ship_to_place.position = position_arr
-                    this.number_of_ships_played++;
-                    console.log(ship_to_place.name + " placed successfully")
-                    //console.log("Updated position array: " + JSON.stringify(get_position_of_ships()))
-                    //return position_of_ships
-                    return true
-                } 
-                else{
-                    console.log("WARNING: You cannot place ship")
-                    return false
-                }
-            }
-            else{
-                console.log(error)
-                //throw error
-            }
-        }
-        
-        
     }
 
+
     function receiveAttack(posX, posY){
-        let direct_hit = false;
-        //determines if the coordinates hit any of the ships,
-        //sends a hit to the correct ship,
-        //records the coordinates of missed shot
-        if(JSON.stringify(missed_shots).includes(JSON.stringify([posX, posY])) || JSON.stringify(position_of_hits).includes(JSON.stringify([posX,posY]))){
-            console.log("you already made that move!")
-        }
-        else{
-            for(let i=0;i<this.ships.length;i++){
-                if(JSON.stringify(this.ships[i].position).includes(JSON.stringify([posX,posY]))){
-                    console.log("you hit a ship!")
-                    this.ships[i].hits++;
-                    if(this.ships[i].isSunk()==true){
-                        this.number_of_ships_sunk++;
-                        console.log(`YOU SUNK A ${this.ships[i].name}!`)
-                    }
-                    direct_hit = true;
-                    this.position_of_hits.push([posX,posY])
-                    if(this.sunk_all_ships()==true){
-                        console.log("GAME OVER")
-                    }
-                }
-                
+            if(JSON.stringify(this.missed_shots).includes(JSON.stringify([posX, posY])) || JSON.stringify(this.position_of_hits).includes(JSON.stringify([posX,posY]))){
+                console.log("you already made that move!")
             }
-            if(direct_hit==false){
+            else{
+                for(let i=0;i<this.ships.length;i++){
+                    if(JSON.stringify(this.ships[i].position).includes(JSON.stringify([posX,posY]))){
+                        console.log("you hit a ship!")
+                        this.ships[i].hits++;
+                        this.position_of_hits.push([posX,posY])
+                        if(this.ships[i].isSunk()==true){
+                            this.number_of_ships_sunk++;
+                            console.log(`YOU SUNK A ${this.ships[i].name}!`)
+                        }
+                        if(this.sunk_all_ships()==true){
+                            console.log("GAME OVER")
+                        }
+                        return true
+                    }
+
+                }
                 console.log("you missed!")
                 this.missed_shots.push([posX, posY])
+                return false
             }
-            
-        }
-        return direct_hit
     }
 
     
@@ -270,92 +197,60 @@ function Gameboard(){
             return false;
         }
         else{
-            
             return true;
         }
     }
 
 
-    this.get_possible_position_array = function(starting_position, length, isVertical){
+    function get_possible_position_array(row, column, length, isVertical){
+        var starting_position = [row,column]
         var possible_pos_array=[]
-        var previousPos = starting_position;
-        possible_pos_array.push(board[starting_position].position)
+        var previousPos;
+        possible_pos_array.push(starting_position)
         if(isVertical == true){
-            console.log("Generating a vertical position array")
+            //console.log("Generating a vertical position array")
             for(let i=1;i<length;i++){
-                previousPos  = previousPos + 10
-                if(board[previousPos]== undefined){
-                    console.log("Attempted to create a position off the board")
-                    return
-                }
-                else{
-                    var pos_of_interest = board[previousPos].position
-                    possible_pos_array.push(pos_of_interest)
-                }
+                previousPos  = [row+i, column]
+                possible_pos_array.push(previousPos)
             }
         }
         else{
-            console.log("Generating a horizontal position array")
+            //console.log("Generating a horizontal position array")
             for(let i=1;i<length;i++){
-                previousPos  = previousPos+ 1
-                if(board[previousPos] == undefined){
-                    console.log("Attempted to create a position off the board")
-                    return 
+                previousPos  = [row, column+i]
+                possible_pos_array.push(previousPos)
                 }
-                else{
-                    var pos_of_interest = board[previousPos].position
-                    possible_pos_array.push(pos_of_interest)
-                }
-                
             }
-        }
-        console.log("Generated possible array: "+JSON.stringify(possible_pos_array))
+        //console.log("Generated possible array: "+JSON.stringify(possible_pos_array))
         return possible_pos_array
     }
     
     function randomly_place_single_ship(ship_to_place){
-            var index_i = Math.floor(Math.random()*(DIMENSIONS*DIMENSIONS));
+            var row = Math.floor(Math.random()*DIMENSIONS);
+            var column = Math.floor(Math.random()*DIMENSIONS)
             var isVertical = Math.random() < 0.5;
-            var results = get_possible_position_array(index_i, ship_to_place.ship_length, isVertical)
-            if(results==undefined){
+            var position_arr = get_possible_position_array(row, column, ship_to_place.ship_length, isVertical)
+            if(position_arr==undefined){
                 console.log("This position array will not work. Generate a new positon array")
                 return false
             }
             else{
-                try{
-                    var placement = placeShip(ship_to_place,results, isVertical)
-                    console.log("Placement: "+ placement)
-                    if(placement==true){
-                        // var placement = placeShip(ship_to_place,results, isVertical)
-                        // console.log("Placement:" + placement)
-                        return true
-                    }
-                    else{
-                        return false
-                    }
+                if(placeShip(ship_to_place,position_arr, isVertical)){
+                    return true
                 }
-                catch(error){
-                    console.log(error)
+                else{
+                    return false
                 }
             }
     }
 
      function randomly_place_ships(){
-        var counter = 0
-        while(counter<5){
-            console.log(counter)
-            var placement = randomly_place_single_ship(this.ships[counter])
-            //counter++
-            if(placement==true){
-                console.log("placement worked")
-                counter++
+        while(this.number_of_ships_played<5){
+            if(randomly_place_single_ship(this.ships[this.number_of_ships_played])){
+                this.number_of_ships_played++
             }
-            else{
-                console.log("Need to try that again")
-            }
-
         }
-        console.log(`Position of randomly placed ships: ${JSON.stringify(get_position_of_ships())}`)
+        return JSON.stringify(get_position_of_ships())
     }
 
     function get_sunk_ship_positions(){
@@ -380,7 +275,6 @@ function Gameboard(){
         placeShip, 
         create_board, 
         generate_ships,
-        get_index,
         receiveAttack,
         check_position_on_board,
         sunk_all_ships, 
@@ -393,17 +287,20 @@ function Gameboard(){
     }
 }
 
+
 function Player(){
     var gameboard = Gameboard();
     var name = null;
-    var available_moves = get_available_moves(JSON.parse(JSON.stringify(gameboard.board) ))
+    var available_moves = get_available_moves(JSON.parse(JSON.stringify(gameboard.board)))
     var previous_moves = [];
     var priority_moves = [];
 
     function get_available_moves(arr){
         var pos_arr = []
-        for(let i=0; i<arr.length;i++){
-            pos_arr.push(arr[i].position)
+        for(let i=0; i<10;i++){
+            for(let j=0; j<10;j++){
+                pos_arr.push(arr[i][j].position)
+            }
         }
          return pos_arr
     }
@@ -417,37 +314,33 @@ function Player(){
         }
     }
 
-    function randomShipPlacement(){
-        this.gameboard.randomly_place_ships();
-    }
-    function manualShipPlacement(ship, pos_arr, isVertical){
-        this.gameboard.placeShip(ship, pos_arr, isVertical)
-    }
 
     function manual_attack(opponent, arr){
         //if attack has not been made at that position opponent will receive attack. The opponent's board will record the misses or hits made on their ships. 
         if(this.gameboard.number_of_ships_played==5 && opponent.gameboard.number_of_ships_played==5){
             var posX = arr[0]
             var posY = arr[1]
-            var index_i = this.get_index_from_available_moves(posX,posY)
-            console.log(`Attack ${opponent.name} at position [${posX},${posY}]`)
-            if(index_i!=undefined){
-                this.available_moves.splice(index_i,1)
-                if(!JSON.stringify(this.previous_moves).includes(JSON.stringify([posX,posY]))){
-                    this.previous_moves.push([posX,posY])
-                    return opponent.gameboard.receiveAttack(posX, posY)
-                }
+            var index_i = get_index_from_available_moves(posX,posY)
+            console.log(`Attack ${opponent.name} at position [${posX},${posY}] \n at index ${index_i}`)
+            if(JSON.stringify(this.previous_moves).includes(JSON.stringify([posX,posY]))){
+                console.log("you already made that move!")
+                return
             }
             else{
-                return undefined
+                var attack_result = opponent.gameboard.receiveAttack(posX, posY)
+                this.previous_moves.push([posX,posY])
+                this.available_moves.splice(index_i,1)
+                //console.log(`There are now ${this.available_moves.length} available now. Previous moves list is now ${JSON.stringify(this.previous_moves)}`)
+                return attack_result
             }
         }
+
     }
 
     function random_attack(opponent){
         //if both players have placed their ships, they can launch an attack
         if(this.gameboard.number_of_ships_played==5 && opponent.gameboard.number_of_ships_played==5){
-            console.log("Number of moves available: " + this.available_moves.length)
+            //console.log("Number of moves available: " + this.available_moves.length)
             if(this.available_moves.length > 0){
                 var index_i = Math.floor(Math.random()*(this.available_moves.length));
                 //console.log("random index generated:" + index_i)
@@ -466,32 +359,21 @@ function Player(){
         }
     }
     
-    function is_player_ai(response){
-        if(response == "yes"){
-            return true
-        }
-        if(response == "no"){
-            return false
-        }
-    }
 
     function get_neighboring_positions(arr, player){
-        //console.log(`searching for neighboring positions of ${arr}`)
         var steps = [[0,-1],[-1,0],[0,1],[1,0]]
         var neighboring_positions = []
         for(let i=0;i<steps.length;i++){
             var possibleX = steps[i][0] + arr[0]
             var possibleY = steps[i][1] + arr[1]
             var possible_position = [possibleX,possibleY]
-            //console.log(possible_position)
             //if position is on the board, add it to the neighboring array
             if(player.gameboard.check_position_on_board(possibleX,possibleY)){
                 neighboring_positions.push(possible_position)
             }
 
         }
-        //console.log(`neighboring positions of ${JSON.stringify(arr)}: ${JSON.stringify(neighboring_positions)}`)
-        return neighboring_positions
+         return neighboring_positions
     }
 
     function smart_attack(opponent){
@@ -501,13 +383,11 @@ function Player(){
             var last_posY = this.previous_moves[this.previous_moves.length-1][1]
             var neighboring_positions = get_neighboring_positions([last_posX,last_posY],opponent)
             for(let i=0;i<neighboring_positions.length;i++){
-                //console.log(neighboring_positions[i])
                 if(!JSON.stringify(previous_moves).includes(JSON.stringify(neighboring_positions[i]))){
                     this.priority_moves.push(neighboring_positions[i])
                 }
             }
             this.manual_attack(opponent, this.priority_moves.pop())
-            //console.log(this.priority_moves)
         }
         //if the last move was not a hit,but there are still priority moves 
         else{
@@ -531,11 +411,8 @@ function Player(){
         priority_moves,
         get_available_moves,
         get_index_from_available_moves,
-        randomShipPlacement,
-        manualShipPlacement,
         manual_attack,
         random_attack,
-        is_player_ai,
         get_neighboring_positions,
         smart_attack
     }
@@ -551,14 +428,17 @@ console.log("*************************************************")
     // player2.name = "Player2"
     //console.log(player1.gameboard.ships[1].position)
     //console.log(player1.gameboard.get_position_of_ships())
-    //player1.randomShipPlacement()
-    //player1.gameboard.randomly_place_single_ship(player1.gameboard.ships[0])
+    // console.log(player1.gameboard.get_possible_position_array(1, 2, 3, true))
+    //console.log(player1.gameboard.randomly_place_ships())
+    // console.log(player2.gameboard.receiveAttack(4,5))
 
     
     //console.log(player1.gameboard.isPlacementPossible(player1.gameboard.ships[0],[[4,7],[5,7],[6,7],[7,7],[8,7]]))
-    //  player1.manualShipPlacement(player1.gameboard.ships[0],[[4,7],[5,7],[6,7],[7,7],[8,7]])
-    //  player1.manualShipPlacement(player1.gameboard.ships[1],[[7,0],[7,1],[7,2],[7,3]])
-    //   player1.manualShipPlacement(player1.gameboard.ships[2],[[0,7],[0,8],[0,9]])
+    //player1.gameboard.increase_number_of_ships_placed()
+    // player1.gameboard.placeShip(player1.gameboard.ships[0],[[4,7],[5,7],[6,7],[7,7],[8,7]])
+    // player1.gameboard.placeShip(player1.gameboard.ships[1],[[7,0],[7,1],[7,2],[7,3]])
+    // player1.gameboard.placeShip(player1.gameboard.ships[2],[[0,7],[0,8],[0,9]])
+    //console.log("Number of ships placed: "+ player1.gameboard.number_of_ships_played)
 
     //  player1.manualShipPlacement(player1.gameboard.ships[3],[[6,2],[7,2],[8,2]]) //should fail because there is overlap
     // player1.manualShipPlacement(player1.gameboard.ships[3],[[2,3],[3,3],[4,3]])
@@ -598,7 +478,7 @@ console.log("*************************************************")
     player1.name = "Player1"
     player2.name = "Player2"
 
-    function get_selection(ship,starting_position, target_length, isVertical){
+    function get_selection(ship, starting_position, target_length, isVertical){
         var posX = Number(starting_position[0])
         var posY = Number(starting_position[1])
         possible_pos_array=[]
@@ -681,12 +561,12 @@ console.log("*************************************************")
             }
         }
     }
-    create_opponent_board()
-    create_my_board()
-    var my_grid_items = my_grid.querySelectorAll(":scope > .grid-item")
-    var opponent_grid_items = opponent_grid.querySelectorAll(":scope > .grid-item")
-    var selection = [] 
-var current_ship;
+create_opponent_board()
+create_my_board()
+var my_grid_items = my_grid.querySelectorAll(":scope > .grid-item")
+var opponent_grid_items = opponent_grid.querySelectorAll(":scope > .grid-item")
+var selection = [] 
+var current_ship ;
 var target_length;
 var isVertical = false;
 var position = []
@@ -698,9 +578,7 @@ manual_placement.addEventListener("click", manually_place_ships_by_click);
 random_placement.onclick = function() {
     content.innerHTML = ""
     my_console.innerHTML = ""
-    player1.randomShipPlacement()
-    //var my_ships = player1.gameboard.get_position_of_ships()
-    //console.log("The position of my ships: " + JSON.stringify(my_ships) + "\n Length of positions in array: "+ my_ships.length)
+    player1.gameboard.randomly_place_ships()
     check_my_status()
     ready_to_play()
 }
@@ -709,15 +587,17 @@ random_placement.onclick = function() {
 
 
 
-async function manually_place_ships_by_click(){
+function manually_place_ships_by_click(){
     //right click to switch between vertical and horizontal placement options
     content.innerHTML = ""
     my_console.innerHTML = ""
     content.appendChild(reset_button)
+    current_ship = player1.gameboard.ships[0]
+    isPlaced=false
     get_position_loop()
     mouseover_loop()
     make_seleciton_loop()
-    get_next_ship()
+    //get_next_ship()
 }
 
 
@@ -745,11 +625,6 @@ function get_position_loop(){
     })
 }
 
-
-
-// rotate_selection.addEventListener('click',function(){
-//     isVertical = toggle_isVertical(isVertical)
-// })
 
 window.addEventListener('contextmenu',function(event){
     event.preventDefault();
@@ -784,12 +659,7 @@ function mouseover_selection(){
     else{
         return
     }
-
-   
 }
-
-
-
 
 function highlight(arr){
     my_grid_items.forEach(function(item){
@@ -815,11 +685,8 @@ function make_selection(ship, arr, isVertical){
         var results = player1.gameboard.placeShip(ship,arr,isVertical)
         isPlaced = true
         check_my_status()
-        if(results!=undefined){
-            return true
-        }
-        else{
-            return false
+        if(results){
+            get_next_ship()
         }
     }
 }
@@ -828,13 +695,9 @@ function make_selection(ship, arr, isVertical){
 function make_seleciton_loop(){
     my_grid_items.forEach(function(item){
         item.addEventListener("click", function(){
-           var results = make_selection(current_ship,selection,isVertical)
-            if(results){
-                get_next_ship()
-            }
+           make_selection(current_ship,selection,isVertical)
         }) 
     })
-    console.log("isPlaced outside loop: "+ isPlaced)
 
 }
 
@@ -845,15 +708,14 @@ function remove_mouseover(){
 }
 
 function get_next_ship(){
+    player1.gameboard.number_of_ships_played++
     if(player1.gameboard.number_of_ships_played<5){
         current_ship = player1.gameboard.ships[player1.gameboard.number_of_ships_played]
-        console.log(current_ship)
         my_console.innerHTML = ""
         my_console.innerHTML = `Place your ${current_ship.name} . Right-click to rotate.`
         isPlaced = false
-
     }
-    else{
+    if(player1.gameboard.number_of_ships_played==5){
         console.log("You placed all your ships! Ready to play!")
         my_console.innerHTML = ""
         ready_to_play()
@@ -861,12 +723,9 @@ function get_next_ship(){
     
 }
 
-function get_isPlaced(){
-    return isPlaced
-}
 
 function ready_to_play(){
-    player2.randomShipPlacement()
+    player2.gameboard.randomly_place_ships()
     my_console.innerHTML = "Now we are ready to play. Click on the opposing team's board to launch an attack."
     content.appendChild(reset_button)
     play_a_game()
@@ -881,36 +740,36 @@ function play_a_game(){
         var posX = Number(item.innerHTML[0])
         var posY = Number(item.innerHTML[2])
         var position = [posX, posY]
+        
             item.onclick = function(){
                 my_console.innerHTML=""
                 if(player1.gameboard.number_of_ships_sunk<5 && player2.gameboard.number_of_ships_sunk<5){
                     my_console.innerHTML ="Entered this loop on a click"
                     var result = player1.manual_attack(player2,position)
-                    
                     if(result!=undefined){
                         check_opponents_status(item)
                         if(result==true){
                             my_console.innerHTML = `Direct hit at [${item.innerHTML}] on opponent`
                             if(player2.gameboard.number_of_ships_sunk==5){
                                 my_console.innerHTML  = `You are a winner!`
-                                
+                                return
                             }
                         }
                         else{
                             my_console.innerHTML = `Attack at [${item.innerHTML}] missed opponent`
                         }
-
+                        //now opponent makes a move
                         player2.smart_attack(player1)
                         check_my_status()
-
                         if(player1.gameboard.number_of_ships_sunk==5){
                             my_console.innerHTML  = `You lost! Click reset to play again!`
+                            return
                         }
                         
                     }
             
                     else{
-                        my_console.innerHTML = `Attack at [${item.innerHTML}] is not allowed`
+                        my_console.innerHTML = `Attack at [${item.innerHTML}] is not allowed \n Number of ships played: ${player1.gameboard.number_of_ships_played} \n Number of my ships sunk: ${player1.gameboard.number_of_ships_sunk} `
                     }
             }
             else{
@@ -946,14 +805,14 @@ function check_my_status(){
 
 
 function check_opponents_status(item){
-    console.log(item)
+    //console.log(item)
     var posX = Number(item.innerHTML[0])
     var posY = Number(item.innerHTML[2])
     var position = [posX, posY]
     var sunk_ships_opponents = player2.gameboard.get_sunk_ship_positions()
     
     if(JSON.stringify(sunk_ships_opponents).includes(JSON.stringify(position))){
-        console.log(JSON.stringify(sunk_ships_opponents))
+        //console.log(JSON.stringify(sunk_ships_opponents))
         opponent_ship_is_sunk(sunk_ships_opponents)
     }
     if(JSON.stringify(hit_opponent).includes(JSON.stringify(position))){
