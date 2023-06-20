@@ -245,9 +245,11 @@ function Gameboard(){
     }
 
      function randomly_place_ships(){
-        while(this.number_of_ships_played<5){
-            if(randomly_place_single_ship(this.ships[this.number_of_ships_played])){
-                this.number_of_ships_played++
+        var counter = 0
+        while(counter<5){
+            if(randomly_place_single_ship(this.ships[counter])){
+                //this.number_of_ships_played++
+                counter++
             }
         }
         return JSON.stringify(get_position_of_ships())
@@ -263,6 +265,17 @@ function Gameboard(){
         return sunk_ship_positions
     }
     
+    function get_number_of_ships_placed(){
+        //var counter=0
+        for(let i=0; i<this.ships.length ;i++){
+            if(this.ships[i].position.length!=0){
+                //console.log("Get number of ships placed: " + typeof(this.ships[i].position))
+                this.number_of_ships_played++
+                //counter++
+            }
+        }
+        return this.number_of_ships_played
+    }
 
     return{
         board, 
@@ -283,7 +296,8 @@ function Gameboard(){
         get_possible_position_array,
         randomly_place_single_ship,
         randomly_place_ships,
-        get_sunk_ship_positions
+        get_sunk_ship_positions,
+        get_number_of_ships_placed
     }
 }
 
@@ -422,47 +436,51 @@ console.log("*************************************************")
 
 //MAKE A GAME
 
-    // var player1 = Player()
-    // var player2 = Player()
-    // player1.name = "Player1"
-    // player2.name = "Player2"
-    //console.log(player1.gameboard.ships[1].position)
+    // var myGameboard = new Gameboard()
+    // myGameboard.placeShip(myGameboard.ships[0],[[4,7],[5,7],[6,7],[7,7],[8,7]])
+    // myGameboard.placeShip(myGameboard.ships[1],[[7,0],[7,1],[7,2],[7,3]])
+    // console.log("My gameboard with two ships: " + myGameboard.number_of_ships_played)
+
+    var player1 = Player()
+    var player2 = Player()
+    player1.name = "Player1"
+    player2.name = "Player2"
+    //console.log(player1.gameboard.ships[1].position.length==0)
     //console.log(player1.gameboard.get_position_of_ships())
     // console.log(player1.gameboard.get_possible_position_array(1, 2, 3, true))
-    //console.log(player1.gameboard.randomly_place_ships())
+    console.log(player1.gameboard.randomly_place_ships())
+    console.log(player1.gameboard.get_number_of_ships_placed())
+    //console.log(player1.gameboard.ships[1].position.length==0)
     // console.log(player2.gameboard.receiveAttack(4,5))
 
     
     //console.log(player1.gameboard.isPlacementPossible(player1.gameboard.ships[0],[[4,7],[5,7],[6,7],[7,7],[8,7]]))
     //player1.gameboard.increase_number_of_ships_placed()
-    // player1.gameboard.placeShip(player1.gameboard.ships[0],[[4,7],[5,7],[6,7],[7,7],[8,7]])
-    // player1.gameboard.placeShip(player1.gameboard.ships[1],[[7,0],[7,1],[7,2],[7,3]])
-    // player1.gameboard.placeShip(player1.gameboard.ships[2],[[0,7],[0,8],[0,9]])
-    //console.log("Number of ships placed: "+ player1.gameboard.number_of_ships_played)
-
-    //  player1.manualShipPlacement(player1.gameboard.ships[3],[[6,2],[7,2],[8,2]]) //should fail because there is overlap
-    // player1.manualShipPlacement(player1.gameboard.ships[3],[[2,3],[3,3],[4,3]])
-    //  player1.manualShipPlacement(player1.gameboard.ships[3],[[2,3],[3,3],[4,3]]) //repeat and should fail
-    //  player1.manualShipPlacement(player1.gameboard.ships[4],[[2,4],[2,5]])
-    //  var set1 = new Set(player1.gameboard.get_position_of_ships())
-    //  console.log(set1)
-
-    // player2.manualShipPlacement(player2.gameboard.ships[0],[[1,2],[1,3],[1,4],[1,5],[1,6]])
-    // player2.manualShipPlacement(player2.gameboard.ships[1],[[2,3],[2,4],[2,5],[2,6]])
-    // player2.manualShipPlacement(player2.gameboard.ships[2],[[8,5],[8,6],[8,7]])
-    // player2.manualShipPlacement(player2.gameboard.ships[3],[[7,3],[8,3],[9,3]])
-    // player2.manualShipPlacement(player2.gameboard.ships[4],[[4,4],[4,5]])
-
-    // console.log("Player1 ships: "+JSON.stringify(game.player1.gameboard.position_of_ships))
-    // console.log("Player2 ships: " + JSON.stringify(game.player2.gameboard.position_of_ships))
+    //  player1.gameboard.placeShip(player1.gameboard.ships[0],[[4,7],[5,7],[6,7],[7,7],[8,7]])
+    //   player1.gameboard.placeShip(player1.gameboard.ships[1],[[7,0],[7,1],[7,2],[7,3]])
+    //   console.log(player1.gameboard.ships[1].position)
+    //  player1.gameboard.placeShip(player1.gameboard.ships[2],[[0,7],[0,8],[0,9]])
+    //console.log("Number of ships placed Player1: "+ player1.gameboard.number_of_ships_played)
 
 
-    // //console.log(findDuplicates(strArray)) // All duplicates
-    // console.log([...new Set(findDuplicates(strArray))]) // Unique duplicates
 
+    player2.gameboard.placeShip(player2.gameboard.ships[0],[[1,2],[1,3],[1,4],[1,5],[1,6]])
+    player2.gameboard.placeShip(player2.gameboard.ships[1],[[2,3],[2,4],[2,5],[2,6]])
+    player2.gameboard.placeShip(player2.gameboard.ships[2],[[8,5],[8,6],[8,7]])
+    player2.gameboard.placeShip(player2.gameboard.ships[3],[[7,3],[8,3],[9,3]])
+    player2.gameboard.placeShip(player2.gameboard.ships[4],[[4,4],[4,5]])
+    console.log(player2.gameboard.get_number_of_ships_placed())
 
-    //console.log("double check to make sure there is no overlap: " + [...new Set(findDuplicates(JSON.stringify(game.player1.gameboard.position_of_ships)))])
-    //PLAY A GAME
+    player2.manual_attack(player1,[4,4])
+    player2.manual_attack(player1,[3,3])
+    player2.manual_attack(player1,[2,2])
+    console.log("Available moves: " + player2.available_moves.length)
+    console.log("Previous moves: " + JSON.stringify(player2.previous_moves))
+    console.log("Number of previous moves: "+ player2.previous_moves.length)
+    
+    // console.log("Player1 ships: "+JSON.stringify(player1.gameboard.position_of_ships))
+    // console.log("Player2 ships: " + JSON.stringify(player2.gameboard.position_of_ships))
+
 
 //VISUALIZE
 
@@ -579,6 +597,7 @@ random_placement.onclick = function() {
     content.innerHTML = ""
     my_console.innerHTML = ""
     player1.gameboard.randomly_place_ships()
+    player1.gameboard.get_number_of_ships_placed()
     check_my_status()
     ready_to_play()
 }
@@ -726,6 +745,7 @@ function get_next_ship(){
 
 function ready_to_play(){
     player2.gameboard.randomly_place_ships()
+    player2.gameboard.get_number_of_ships_placed()
     my_console.innerHTML = "Now we are ready to play. Click on the opposing team's board to launch an attack."
     content.appendChild(reset_button)
     play_a_game()
